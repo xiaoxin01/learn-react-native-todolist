@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, AdSupportIOS, TextInput, Button, Switch } from 'react-native';
+import { StyleSheet, Text, View, AdSupportIOS, TextInput, Button, Switch, FlatList } from 'react-native';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -38,19 +38,45 @@ class ToDoList extends React.Component {
     this.state = { Tasks: this.props.tasks, text: '' };
   }
 
+  _keyExtractor = (itemaa) => itemaa.guid;
+
+  _onPressItem = (guid) => {
+    this.setState(prevState => {
+      let task = prevState.Tasks.find(task => task.guid === guid);
+      task.isFinished = !task.isFinished;
+      return prevState;
+    });
+  }
+
+  _reanderItem = ({item}) => (
+    <ToDoItem
+      task={item}
+      addToDoItem={this.addToDoItem}
+      onPressItem={this._onPressItem}
+    />
+  );
+
   addToDoItem = (text) => {
-    this.setState(prevState => { prevState.Tasks.push({ "task": text, "isFinished": false, "guid": new Date().getTime()}); return prevState; });
+    this.setState(prevState => {
+      prevState.Tasks.push({
+        "task": text,
+        "isFinished": false,
+        "guid": new Date().getTime(),
+      });
+      return prevState;
+    });
   }
 
   render() {
     return (
       <View style={styles.container}>
         <TodoGenerator addToDoItem={this.addToDoItem} />
-        {this.state.Tasks.map((t) => {
-          return (
-            <ToDoItem task={t} key={t.guid} />
-          )
-        })}
+        <FlatList
+          data={this.state.Tasks}
+          extraData={this.state}
+          keyExtractor={this._keyExtractor}
+          renderItem={this._reanderItem}
+        />
       </View>
     )
   }
@@ -69,8 +95,8 @@ class TodoGenerator extends React.Component {
   render() {
     return (
       <View>
-        <TextInput placeholder="Input todo task" onChangeText={(text) => this.setState({ text })} />
         <Text>{this.state.text}</Text>
+        <TextInput placeholder="Input todo task" onChangeText={(text) => this.setState({ text })} />
         <Button onPress={this.handlePress} title="add" />
       </View>
     )
@@ -78,15 +104,16 @@ class TodoGenerator extends React.Component {
 }
 
 class ToDoItem extends React.Component {
-  constructor(props) {
-    super(props);
+  _onPress = () => {
+    this.props.onPressItem(this.props.task.guid);
   }
+
   render() {
     let task = this.props.task;
     return (
       <View>
         <Switch value={task.isFinished}></Switch>
-        <Text>{task.task}</Text>
+        <Text onPress={this._onPress}>{task.task}</Text>
       </View>
     )
   }

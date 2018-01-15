@@ -1,7 +1,50 @@
 import React from 'react';
 import { StyleSheet, Text, View, AdSupportIOS, TextInput, Button, Switch, FlatList } from 'react-native';
+import { StackNavigator } from 'react-navigation';
 
-export default class App extends React.Component {
+class MainScreen extends React.Component {
+  static navigationOptions = {
+    title: 'Welcome',
+  };
+  render() {
+    const { navigate } = this.props.navigation;
+    return (
+      <Button
+        title="Go to Jane's profile"
+        onPress={() =>
+          navigate('Profile', { name: 'Jane' })
+        }
+      />
+    );
+  }
+}
+
+class ProfileScreen extends React.Component {
+  static navigationOptions = {
+    title: 'ProfileScreen',
+  };
+  render() {
+    const { navigate } = this.props.navigation;
+    return (
+      <Button
+        title="Home"
+        onPress={() =>
+          navigate('Main', { name: 'Jane' })
+        }
+      />
+    );
+  }
+}
+
+// https://reactnavigation.org/docs/intro/
+const App = StackNavigator({
+  Main: {screen: MainScreen},
+  Profile: {screen: ProfileScreen},
+});
+
+export default App;
+
+class App2 extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,7 +91,7 @@ class ToDoList extends React.Component {
     });
   }
 
-  _reanderItem = ({item}) => (
+  _reanderItem = ({ item }) => (
     <ToDoItem
       task={item}
       addToDoItem={this.addToDoItem}

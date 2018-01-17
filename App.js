@@ -1,50 +1,43 @@
 import React from 'react';
 import { StyleSheet, Text, View, AdSupportIOS, TextInput, Button, Switch, FlatList } from 'react-native';
-import { StackNavigator } from 'react-navigation';
+import { TabNavigator } from 'react-navigation';
 
 class MainScreen extends React.Component {
   static navigationOptions = {
-    title: 'Welcome',
+    tabBarLabel: 'On Going',
   };
   render() {
     const { navigate } = this.props.navigation;
     return (
-      <Button
-        title="Go to Jane's profile"
-        onPress={() =>
-          navigate('Profile', { name: 'Jane' })
-        }
-      />
+      <View>
+        <ToDoListApp />
+      </View>
     );
   }
 }
 
 class ProfileScreen extends React.Component {
   static navigationOptions = {
-    title: 'ProfileScreen',
+    tabBarLabel: 'Finished',
   };
   render() {
     const { navigate } = this.props.navigation;
     return (
-      <Button
-        title="Home"
-        onPress={() =>
-          navigate('Main', { name: 'Jane' })
-        }
-      />
+      <View>
+        <ToDoListApp />
+      </View>
     );
   }
 }
 
 // https://reactnavigation.org/docs/intro/
-const App = StackNavigator({
+const App = TabNavigator({
   Main: {screen: MainScreen},
   Profile: {screen: ProfileScreen},
 });
 
-export default App;
 
-class App2 extends React.Component {
+class ToDoListApp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -112,7 +105,7 @@ class ToDoList extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View>
         <TodoGenerator addToDoItem={this.addToDoItem} />
         <FlatList
           data={this.state.Tasks}
@@ -170,3 +163,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+
+export default App;

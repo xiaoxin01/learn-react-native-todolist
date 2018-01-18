@@ -10,7 +10,7 @@ class MainScreen extends React.Component {
     const { navigate } = this.props.navigation;
     return (
       <View>
-        <ToDoListApp />
+        <ToDoList tasks={this.props.screenProps.tasks} addToDoItem={this.props.screenProps.addToDoItem}/>
       </View>
     );
   }
@@ -24,7 +24,7 @@ class ProfileScreen extends React.Component {
     const { navigate } = this.props.navigation;
     return (
       <View>
-        <ToDoListApp />
+        <ToDoList tasks={this.props.screenProps.tasks}/>
       </View>
     );
   }
@@ -60,10 +60,26 @@ class ToDoListApp extends React.Component {
       ], text: ""
     };
   }
+  
+  addToDoItem = (text) => {
+    this.setState(prevState => {
+      prevState.tasks.push({
+        "task": text,
+        "isFinished": false,
+        "guid": new Date().getTime(),
+      });
+      return prevState;
+    });
+  }
 
   render() {
+    const params = {
+      tasks: this.state.tasks,
+      addToDoItem: this.addToDoItem,
+    }
     return (
-      <ToDoList tasks={this.state.tasks} />
+      // <ToDoList tasks={this.state.tasks} />
+      <App screenProps={params}/>
     );
   }
 }
@@ -71,7 +87,7 @@ class ToDoListApp extends React.Component {
 class ToDoList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { Tasks: this.props.tasks, text: '' };
+    this.state = { text: '' };
   }
 
   _keyExtractor = (itemaa) => itemaa.guid;
@@ -92,24 +108,14 @@ class ToDoList extends React.Component {
     />
   );
 
-  addToDoItem = (text) => {
-    this.setState(prevState => {
-      prevState.Tasks.push({
-        "task": text,
-        "isFinished": false,
-        "guid": new Date().getTime(),
-      });
-      return prevState;
-    });
-  }
 
   render() {
     return (
       <View>
-        <TodoGenerator addToDoItem={this.addToDoItem} />
+        <TodoGenerator addToDoItem={this.props.addToDoItem} />
         <FlatList
-          data={this.state.Tasks}
-          extraData={this.state}
+          data={this.props.tasks}
+          extraData={this.props}
           keyExtractor={this._keyExtractor}
           renderItem={this._reanderItem}
         />
@@ -165,4 +171,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default App;
+export default ToDoListApp;

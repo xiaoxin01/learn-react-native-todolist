@@ -24,7 +24,11 @@ class ProfileScreen extends React.Component {
     const { navigate } = this.props.navigation;
     return (
       <View>
-        <ToDoList tasks={this.props.screenProps.tasks} addToDoItem={this.props.screenProps.addToDoItem}/>
+        <ToDoList tasks={this.props.screenProps.tasks} addToDoItem={this.props.screenProps.addToDoItem}
+          filter={(item) => {
+            return item.isFinished === true;
+          }}
+        />
       </View>
     );
   }
@@ -110,11 +114,12 @@ class ToDoList extends React.Component {
 
 
   render() {
+    const tasks = undefined === this.props.filter ? this.props.tasks : this.props.tasks.filter( item => this.props.filter(item));
     return (
       <View>
         <TodoGenerator addToDoItem={this.props.addToDoItem} />
         <FlatList
-          data={this.props.tasks}
+          data={tasks}
           extraData={this.props}
           keyExtractor={this._keyExtractor}
           renderItem={this._reanderItem}

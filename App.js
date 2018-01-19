@@ -10,7 +10,11 @@ class MainScreen extends React.Component {
     const { navigate } = this.props.navigation;
     return (
       <View>
-        <ToDoList tasks={this.props.screenProps.tasks} addToDoItem={this.props.screenProps.addToDoItem}/>
+      <ToDoList
+        tasks={this.props.screenProps.tasks}
+        addToDoItem={this.props.screenProps.addToDoItem}
+        finishTask={this.props.screenProps.finishTask}
+      />
       </View>
     );
   }
@@ -24,7 +28,10 @@ class ProfileScreen extends React.Component {
     const { navigate } = this.props.navigation;
     return (
       <View>
-        <ToDoList tasks={this.props.screenProps.tasks} addToDoItem={this.props.screenProps.addToDoItem}
+        <ToDoList
+          tasks={this.props.screenProps.tasks}
+          addToDoItem={this.props.screenProps.addToDoItem}
+          finishTask={this.props.screenProps.finishTask}
           filter={(item) => {
             return item.isFinished === true;
           }}
@@ -36,8 +43,8 @@ class ProfileScreen extends React.Component {
 
 // https://reactnavigation.org/docs/intro/
 const App = TabNavigator({
-  Main: {screen: MainScreen},
-  Profile: {screen: ProfileScreen},
+  Main: { screen: MainScreen },
+  Profile: { screen: ProfileScreen },
 });
 
 
@@ -64,7 +71,7 @@ class ToDoListApp extends React.Component {
       ], text: ""
     };
   }
-  
+
   addToDoItem = (text) => {
     this.setState(prevState => {
       prevState.tasks.push({
@@ -76,14 +83,23 @@ class ToDoListApp extends React.Component {
     });
   }
 
+  finishTask = (guid) => {
+    this.setState(prevState => {
+      let task = prevState.tasks.find(task => task.guid === guid);
+      task.isFinished = !task.isFinished;
+      return prevState;
+    });
+  }
+
   render() {
     const params = {
       tasks: this.state.tasks,
       addToDoItem: this.addToDoItem,
+      finishTask: this.finishTask,
     }
     return (
       // <ToDoList tasks={this.state.tasks} />
-      <App screenProps={params}/>
+      <App screenProps={params} />
     );
   }
 }
@@ -91,17 +107,12 @@ class ToDoListApp extends React.Component {
 class ToDoList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { text: '' };
   }
 
   _keyExtractor = (itemaa) => itemaa.guid;
 
-  _onPressItem = (guid) => {
-    this.setState(prevState => {
-      let task = prevState.Tasks.find(task => task.guid === guid);
-      task.isFinished = !task.isFinished;
-      return prevState;
-    });
+  _onPressItem = (guid) => {    
+    this.props.finishTask(guid);
   }
 
   _reanderItem = ({ item }) => (
@@ -114,7 +125,7 @@ class ToDoList extends React.Component {
 
 
   render() {
-    const tasks = undefined === this.props.filter ? this.props.tasks : this.props.tasks.filter( item => this.props.filter(item));
+    const tasks = undefined === this.props.filter ? this.props.tasks : this.props.tasks.filter(item => this.props.filter(item));
     return (
       <View>
         <TodoGenerator addToDoItem={this.props.addToDoItem} />

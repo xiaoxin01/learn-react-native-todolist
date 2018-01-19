@@ -24,7 +24,7 @@ class ProfileScreen extends React.Component {
     const { navigate } = this.props.navigation;
     return (
       <View>
-        <ToDoList tasks={this.props.screenProps.tasks}/>
+        <ToDoList tasks={this.props.screenProps.tasks} addToDoItem={this.props.screenProps.addToDoItem}/>
       </View>
     );
   }

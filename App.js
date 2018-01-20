@@ -57,17 +57,17 @@ class ToDoListApp extends React.Component {
     this.state = {
       tasks: [
         {
-          "task": "PIVITOL",
-          "isFinished": false,
+          "task": "Learn react",
+          "isFinished": true,
           "guid": "6e667609-3a3b-4bd8-80a4-f2900a5fb9da"
         },
         {
-          "task": "ZAYA",
-          "isFinished": true,
+          "task": "Learn react native",
+          "isFinished": false,
           "guid": "8ea908ca-27f6-40a7-bbd4-3a2f8ffd8da4"
         },
         {
-          "task": "NETBOOK",
+          "task": "Write todolist app",
           "isFinished": false,
           "guid": "8120b151-08dd-4674-8581-c7cfa664fdf6"
         }

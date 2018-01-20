@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, AdSupportIOS, TextInput, Button, Switch, FlatList } from 'react-native';
+import { StyleSheet, Text, View, AdSupportIOS, TextInput, Button, CheckBox, FlatList } from 'react-native';
 import { TabNavigator } from 'react-navigation';
 
 class MainScreen extends React.Component {
@@ -147,6 +147,9 @@ class TodoGenerator extends React.Component {
   }
 
   addToDoItem = (e) => {
+    if ('' === this.state.text) {
+      return;
+    }
     this.props.addToDoItem(this.state.text);
   }
 
@@ -171,8 +174,8 @@ class ToDoItem extends React.Component {
   render() {
     let task = this.props.task;
     return (
-      <View>
-        <Switch value={task.isFinished}></Switch>
+      <View style={styles.todoItem}>
+        <CheckBox value={task.isFinished} onValueChange={this._onPress} style={{marginRight: 10}}></CheckBox>
         <Text onPress={this._onPress}>{task.task}</Text>
       </View>
     )
@@ -180,11 +183,13 @@ class ToDoItem extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  todoItem: {
     flex: 1,
-    backgroundColor: '#fff',
+    padding: 10,
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: 'gray',
     alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 

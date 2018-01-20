@@ -10,11 +10,11 @@ class MainScreen extends React.Component {
     const { navigate } = this.props.navigation;
     return (
       <View>
-      <ToDoList
-        tasks={this.props.screenProps.tasks}
-        addToDoItem={this.props.screenProps.addToDoItem}
-        finishTask={this.props.screenProps.finishTask}
-      />
+        <ToDoList
+          tasks={this.props.screenProps.tasks}
+          addToDoItem={this.props.screenProps.addToDoItem}
+          finishTask={this.props.screenProps.finishTask}
+        />
       </View>
     );
   }
@@ -111,7 +111,7 @@ class ToDoList extends React.Component {
 
   _keyExtractor = (itemaa) => itemaa.guid;
 
-  _onPressItem = (guid) => {    
+  _onPressItem = (guid) => {
     this.props.finishTask(guid);
   }
 
@@ -146,16 +146,18 @@ class TodoGenerator extends React.Component {
     this.state = { text: '' };
   }
 
-  handlePress = (e) => {
+  addToDoItem = (e) => {
     this.props.addToDoItem(this.state.text);
   }
 
   render() {
     return (
       <View>
-        <Text>{this.state.text}</Text>
-        <TextInput placeholder="Input todo task" onChangeText={(text) => this.setState({ text })} />
-        <Button onPress={this.handlePress} title="add" />
+        <TextInput style={{ height: 40, padding: 10 }} placeholder="Input todo task"
+          autoCorrect={false}
+          onChangeText={(text) => this.setState({ text })}
+          onBlur={this.addToDoItem}
+        />
       </View>
     )
   }

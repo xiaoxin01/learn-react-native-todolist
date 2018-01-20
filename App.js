@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, AdSupportIOS, TextInput, Button, CheckBox, FlatList } from 'react-native';
 import { TabNavigator } from 'react-navigation';
+import realm from './models';
 
 class MainScreen extends React.Component {
   static navigationOptions = {
@@ -54,42 +55,65 @@ const App = TabNavigator({
 class ToDoListApp extends React.Component {
   constructor(props) {
     super(props);
+
+    let todoList = realm.objects('TodoList');
+    if (todoList.length < 1) {
+      todoList = {
+        name: 'Todo List', creationDate: new Date(), items: [
+          {
+            "task": "Learn react",
+            "isFinished": true,
+            "guid": "6e667609-3a3b-4bd8-80a4-f2900a5fb9da"
+          },
+          {
+            "task": "Learn react native",
+            "isFinished": false,
+            "guid": "8ea908ca-27f6-40a7-bbd4-3a2f8ffd8da4"
+          },
+          {
+            "task": "Write todolist app",
+            "isFinished": false,
+            "guid": "8120b151-08dd-4674-8581-c7cfa664fdf6"
+          }
+        ]
+      };
+
+      realm.write(() => {
+        realm.create('TodoList', todoList);
+      });
+    }
+
     this.state = {
-      tasks: [
-        {
-          "task": "Learn react",
-          "isFinished": true,
-          "guid": "6e667609-3a3b-4bd8-80a4-f2900a5fb9da"
-        },
-        {
-          "task": "Learn react native",
-          "isFinished": false,
-          "guid": "8ea908ca-27f6-40a7-bbd4-3a2f8ffd8da4"
-        },
-        {
-          "task": "Write todolist app",
-          "isFinished": false,
-          "guid": "8120b151-08dd-4674-8581-c7cfa664fdf6"
-        }
-      ], text: ""
+      tasks: todoList[0].items, text: ""
     };
   }
 
   addToDoItem = (text) => {
-    this.setState(prevState => {
-      prevState.tasks.push({
-        "task": text,
-        "isFinished": false,
-        "guid": new Date().getTime(),
+    const item = {
+      "task": text,
+      "isFinished": false,
+      "guid": 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      }),
+    };
+    realm.write(() => {
+      const tasks = realm.objects('TodoList')[0].items;
+      tasks.push(item);
+      this.setState(prevState => {
+        prevState.tasks = tasks;
+        return prevState;
       });
-      return prevState;
     });
   }
 
   finishTask = (guid) => {
     this.setState(prevState => {
       let task = prevState.tasks.find(task => task.guid === guid);
-      task.isFinished = !task.isFinished;
+      realm.write(() => {
+        task.isFinished = !task.isFinished;
+        realm.create('Todo', task, true);
+      });
       return prevState;
     });
   }
@@ -178,7 +202,7 @@ class ToDoItem extends React.Component {
     let task = this.props.task;
     return (
       <View style={styles.todoItem}>
-        <CheckBox value={task.isFinished} onValueChange={this._onPress} style={{marginRight: 10}}></CheckBox>
+        <CheckBox value={task.isFinished} onValueChange={this._onPress} style={{ marginRight: 10 }}></CheckBox>
         <Text>{task.task}</Text>
       </View>
     )

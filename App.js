@@ -83,6 +83,7 @@ class ToDoListApp extends React.Component {
       });
     }
 
+    todoList = realm.objects('TodoList');
     this.state = {
       tasks: todoList[0].items, text: ""
     };

@@ -14,6 +14,9 @@ class MainScreen extends React.Component {
           tasks={this.props.screenProps.tasks}
           addToDoItem={this.props.screenProps.addToDoItem}
           finishTask={this.props.screenProps.finishTask}
+          filter={(item) => {
+            return item.isFinished === false;
+          }}
         />
       </View>
     );
@@ -176,7 +179,7 @@ class ToDoItem extends React.Component {
     return (
       <View style={styles.todoItem}>
         <CheckBox value={task.isFinished} onValueChange={this._onPress} style={{marginRight: 10}}></CheckBox>
-        <Text onPress={this._onPress}>{task.task}</Text>
+        <Text>{task.task}</Text>
       </View>
     )
   }
